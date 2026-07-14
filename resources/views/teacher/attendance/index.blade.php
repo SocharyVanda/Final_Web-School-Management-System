@@ -7,7 +7,7 @@
     <form method="GET" class="flex flex-wrap gap-3">
         <select name="subject_id" onchange="this.form.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm">
             @foreach($subjects as $subject)
-                <option value="{{ $subject->id }}" @selected($subjectId == $subject->id)>{{ $subject->name }} — {{ $subject->schoolClass->name ?? '' }}</option>
+                <option value="{{ $subject->id }}" @selected($subjectId == $subject->id)>{{ $subject->name }} — {{ $subject->schoolClass?->name ?? '' }}</option>
             @endforeach
         </select>
         <input type="date" name="date" value="{{ $date }}" onchange="this.form.submit()" class="px-3 py-2 rounded-lg border border-slate-300 text-sm">
@@ -27,7 +27,7 @@
             @foreach($students as $student)
                 @php $current = $existing[$student->id]->status ?? 'present'; @endphp
                 <tr>
-                    <td class="px-5 py-3">{{ $student->user->name }}</td>
+                    <td class="px-5 py-3">{{ $student->user?->name ?? 'Unknown' }}</td>
                     <td class="px-5 py-3">
                         <select name="statuses[{{ $student->id }}]" class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm">
                             @foreach(['present' => 'Present', 'absent' => 'Absent', 'late' => 'Late', 'excused' => 'Excused'] as $val => $label)

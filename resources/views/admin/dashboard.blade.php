@@ -12,6 +12,31 @@
     </div>
 </div>
 
+<div class="bg-white rounded-card shadow-soft p-4 mb-4 flex items-center gap-3">
+    <label class="text-sm font-medium text-slate-600">
+        View Class:
+    </label>
+
+    <form method="GET">
+        <select
+            name="class_id"
+            onchange="this.form.submit()"
+            class="px-3 py-2 rounded-lg border border-slate-300 text-sm"
+        >
+            @foreach($classes as $class)
+                <option
+                    value="{{ $class->id }}"
+                    @selected($class->id == $selectedClassId)
+                >
+                    {{ $class->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+</div>
+
+<x-schedule :schedules="$schedules" />
+
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-card shadow-soft p-5">
         <div class="flex items-center justify-between mb-3">

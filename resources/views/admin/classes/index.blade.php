@@ -22,7 +22,7 @@
                 <span class="text-xs text-slate-400">{{ $class->students_count }}/{{ $class->capacity }}</span>
             </div>
             <p class="text-sm text-slate-500 mb-1">Room: {{ $class->room ?? '—' }}</p>
-            <p class="text-sm text-slate-500 mb-4">Homeroom: {{ $class->teacher->user->name ?? 'Unassigned' }}</p>
+            <p class="text-sm text-slate-500 mb-4">Homeroom: {{ $class->teacher?->user?->name ?? 'Unassigned' }}</p>
             <div class="flex gap-3 text-xs font-medium">
                 <a href="{{ route('admin.classes.edit', $class) }}" class="text-brand hover:underline">Edit</a>
                 <form action="{{ route('admin.classes.destroy', $class) }}" method="POST" onsubmit="return confirm('Delete this class?')">

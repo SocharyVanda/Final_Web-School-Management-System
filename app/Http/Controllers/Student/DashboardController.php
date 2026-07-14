@@ -10,11 +10,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $student = Auth::user()->student()->with('schoolClass', 'subjects', 'grades.subject')->first();
+        $student = Auth::user()->student()->with('schoolClass.subjects.schedules', 'schoolClass.subjects.teacher.user', 'grades.subject')->first();
 
         $attendancePercentage = $student->attendancePercentage();
         $gpa = $student->gpa();
-        $enrolledSubjects = $student->subjects;
+        $enrolledSubjects = $student->schoolClass?->subjects ?? collect();
         $recentGrades = $student->grades()->with('subject')->latest()->take(5)->get();
 
         $announcements = Announcement::whereIn('target_role', ['all', 'student'])
@@ -23,8 +23,24 @@ class DashboardController extends Controller
             })
             ->orderByDesc('created_at')->take(5)->get();
 
+        // Flatten all schedule slots from class subjects for the weekly grid
+        $scheduleSlots = $enrolledSubjects->flatMap(function ($subject) {
+            return $subject->schedules->map(function ($slot) use ($subject) {
+                return [
+                    'subject_name' => $subject->name,
+                    'subject_code' => $subject->code,
+                    'teacher_name' => optional($subject->teacher?->user)->name,
+                    'day_of_week' => $slot->day_of_week,
+                    'start_time' => $slot->start_time,
+                    'end_time' => $slot->end_time,
+                    'room' => $slot->room,
+                    'color' => $slot->color ?: '#2563EB',
+                ];
+            });
+        });
+
         return view('student.dashboard', compact(
-            'student', 'attendancePercentage', 'gpa', 'enrolledSubjects', 'recentGrades', 'announcements'
+            'student', 'attendancePercentage', 'gpa', 'enrolledSubjects', 'recentGrades', 'announcements', 'scheduleSlots'
         ));
     }
 }

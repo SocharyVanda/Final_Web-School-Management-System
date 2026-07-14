@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title', 'Teachers')
-
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <div>

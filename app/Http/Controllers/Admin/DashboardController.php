@@ -50,10 +50,49 @@ class DashboardController extends Controller
 
         $pendingLeaveRequests = 0; // placeholder for future leave-request feature
 
-        return view('admin.dashboard', compact(
-            'totalStudents', 'totalTeachers', 'totalClasses',
-            'activeClassesPercent', 'todayAttendanceRate', 'months',
-            'recentActivity', 'pendingLeaveRequests'
-        ));
+       // Class schedule dropdown
+$classes = SchoolClass::orderBy('name')->get();
+
+$selectedClassId = request('class_id', $classes->first()?->id);
+
+$scheduleSlots = collect();
+
+if ($selectedClassId) {
+    $selectedClass = SchoolClass::with([
+        'subjects.schedules',
+        'subjects.teacher.user'
+    ])->find($selectedClassId);
+
+    if ($selectedClass) {
+        $scheduleSlots = $selectedClass->subjects->flatMap(function ($subject) {
+            return $subject->schedules->map(function ($schedule) use ($subject) {
+                return [
+                    'subject_name' => $subject->name,
+                    'subject_code' => $subject->code,
+                    'teacher_name' => optional($subject->teacher?->user)->name,
+                    'day_of_week' => $schedule->day_of_week,
+                    'start_time' => $schedule->start_time,
+                    'end_time' => $schedule->end_time,
+                    'room' => $schedule->room,
+                    'color' => $schedule->color ?: '#2563EB',
+                ];
+            });
+        });
+    }
+}
+
+     return view('admin.dashboard', [
+    'totalStudents' => $totalStudents,
+    'totalTeachers' => $totalTeachers,
+    'totalClasses' => $totalClasses,
+    'activeClassesPercent' => $activeClassesPercent,
+    'todayAttendanceRate' => $todayAttendanceRate,
+    'months' => $months,
+    'recentActivity' => $recentActivity,
+    'pendingLeaveRequests' => $pendingLeaveRequests,
+    'classes' => $classes,
+    'selectedClassId' => $selectedClassId,
+    'schedules' => $scheduleSlots,
+]);
     }
 }

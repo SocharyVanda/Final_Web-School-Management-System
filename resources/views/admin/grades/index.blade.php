@@ -35,10 +35,10 @@
         <tbody class="divide-y divide-slate-100">
             @forelse($grades as $grade)
                 <tr>
-                    <td class="px-5 py-3">{{ $grade->student->user->name }}</td>
-                    <td class="px-5 py-3">{{ $grade->subject->name }}</td>
-                    <td class="px-5 py-3">{{ $grade->average }}</td>
-                    <td class="px-5 py-3 font-semibold">{{ $grade->grade }}</td>
+                    <td class="px-5 py-3">{{ $grade->student?->user?->name ?? '—' }}</td>
+                    <td class="px-5 py-3">{{ $grade->subject?->name ?? '—' }}</td>
+                    <td class="px-5 py-3">{{ $grade->average ?? '—' }}</td>
+                    <td class="px-5 py-3 font-semibold">{{ $grade->grade ?? '—' }}</td>
                     <td class="px-5 py-3">
                         <span class="text-xs font-medium px-2 py-1 rounded-full {{ $grade->approved ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600' }}">
                             {{ $grade->approved ? 'Approved' : 'Pending' }}

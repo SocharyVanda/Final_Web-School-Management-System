@@ -33,12 +33,20 @@ class SubjectController extends Controller
 
     public function store(SubjectRequest $request)
     {
-        Subject::create($request->validated());
+        $subject = Subject::create($request->validated());
+
+        foreach ($request->input('schedules', []) as $schedule) {
+            if (!empty($schedule['day_of_week']) && !empty($schedule['start_time'])) {
+                $subject->schedules()->create($schedule);
+            }
+        }
+
         return redirect()->route('admin.subjects.index')->with('success', 'Subject created successfully.');
     }
 
     public function edit(Subject $subject)
     {
+        $subject->load('schedules');
         $teachers = Teacher::with('user')->get();
         $classes = SchoolClass::orderBy('name')->get();
         return view('admin.subjects.edit', compact('subject', 'teachers', 'classes'));
@@ -47,6 +55,14 @@ class SubjectController extends Controller
     public function update(SubjectRequest $request, Subject $subject)
     {
         $subject->update($request->validated());
+
+        $subject->schedules()->delete();
+        foreach ($request->input('schedules', []) as $schedule) {
+            if (!empty($schedule['day_of_week']) && !empty($schedule['start_time'])) {
+                $subject->schedules()->create($schedule);
+            }
+        }
+
         return redirect()->route('admin.subjects.index')->with('success', 'Subject updated successfully.');
     }
 
