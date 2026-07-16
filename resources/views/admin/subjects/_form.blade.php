@@ -59,11 +59,17 @@
                 </div>
                 <div>
                     <label class="text-xs text-slate-500">Start</label>
-                    <input type="time" name="schedules[{{ $i }}][start_time]" value="{{ $schedule['start_time'] ?? '' }}" class="w-full rounded border-slate-300 text-sm">
+                    <input type="time" name="schedules[{{ $i }}][start_time]" 
+                           value="{{ isset($schedule['start_time']) ? \Carbon\Carbon::parse($schedule['start_time'])->format('H:i') : '' }}" 
+                           min="06:00" max="21:00" 
+                           class="w-full rounded border-slate-300 text-sm">
                 </div>
                 <div>
                     <label class="text-xs text-slate-500">End</label>
-                    <input type="time" name="schedules[{{ $i }}][end_time]" value="{{ $schedule['end_time'] ?? '' }}" class="w-full rounded border-slate-300 text-sm">
+                    <input type="time" name="schedules[{{ $i }}][end_time]" 
+                           value="{{ isset($schedule['end_time']) ? \Carbon\Carbon::parse($schedule['end_time'])->format('H:i') : '' }}" 
+                           min="06:00" max="21:00" 
+                           class="w-full rounded border-slate-300 text-sm">
                 </div>
                 <div>
                     <label class="text-xs text-slate-500">Room</label>
@@ -105,11 +111,11 @@ function addScheduleRow() {
         </div>
         <div>
             <label class="text-xs text-slate-500">Start</label>
-            <input type="time" name="schedules[${count}][start_time]" class="w-full rounded border-slate-300 text-sm">
+            <input type="time" name="schedules[${count}][start_time]" min="06:00" max="21:00" class="w-full rounded border-slate-300 text-sm">
         </div>
         <div>
             <label class="text-xs text-slate-500">End</label>
-            <input type="time" name="schedules[${count}][end_time]" class="w-full rounded border-slate-300 text-sm">
+            <input type="time" name="schedules[${count}][end_time]" min="06:00" max="21:00" class="w-full rounded border-slate-300 text-sm">
         </div>
         <div>
             <label class="text-xs text-slate-500">Room</label>

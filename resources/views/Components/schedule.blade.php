@@ -2,8 +2,8 @@
 
 @php
     $days = [1 => 'Mon', 2 => 'Tue', 3 => 'Wed', 4 => 'Thu', 5 => 'Fri'];
-    $startHour = 8;
-    $endHour = 18;
+    $startHour = 6;
+    $endHour = 21;
     $totalHeight = ($endHour - $startHour) * 60;
 @endphp
 
@@ -60,7 +60,7 @@
 
                             @foreach(collect($schedules)->where('day_of_week', $dayNum) as $slot)
                                 @php
-                                    $start = \Carbon\Carbon::parse($slot['start_time'] ?? '08:00');
+                                    $start = \Carbon\Carbon::parse($slot['start_time'] ?? '06:00');
                                     $end = !empty($slot['end_time']) ? \Carbon\Carbon::parse($slot['end_time']) : $start->copy()->addMinutes(60);
 
                                     if ($end->lt($start)) {

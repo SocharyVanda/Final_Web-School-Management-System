@@ -28,6 +28,43 @@ class SubjectRequest extends FormRequest
         ];
     }
 
+    protected function prepareForValidation(): void
+    {
+        $schedules = $this->input('schedules', []);
+        foreach ($schedules as $i => $schedule) {
+            if (!empty($schedule['start_time'])) {
+                $schedules[$i]['start_time'] = $this->normalizeTime($schedule['start_time']);
+            }
+            if (!empty($schedule['end_time'])) {
+                $schedules[$i]['end_time'] = $this->normalizeTime($schedule['end_time']);
+            }
+        }
+        $this->merge(['schedules' => $schedules]);
+    }
+
+    private function normalizeTime(string $time): string
+    {
+        // Handle 12-hour formats like "10:06 AM", "04:06 PM"
+        $time = trim($time);
+        if (preg_match('/(\d{1,2}):(\d{2})\s*(AM|PM)/i', $time, $matches)) {
+            $hour = (int) $matches[1];
+            $minute = $matches[2];
+            $period = strtoupper($matches[3]);
+            if ($period === 'PM' && $hour !== 12) {
+                $hour += 12;
+            }
+            if ($period === 'AM' && $hour === 12) {
+                $hour = 0;
+            }
+            return sprintf('%02d:%s', $hour, $minute);
+        }
+        // Handle H:i:s format by stripping seconds
+        if (preg_match('/^(\d{2}):(\d{2}):\d{2}$/', $time, $matches)) {
+            return $matches[1] . ':' . $matches[2];
+        }
+        return $time;
+    }
+
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
@@ -35,7 +72,7 @@ class SubjectRequest extends FormRequest
             foreach ($schedules as $i => $schedule) {
                 $start = $schedule['start_time'] ?? null;
                 $end = $schedule['end_time'] ?? null;
-                if ($start && $end && $end <= $start) {
+                if (!empty($start) && !empty($end) && $end <= $start) {
                     $validator->errors()->add("schedules.{$i}.end_time", 'End time must be after start time.');
                 }
             }
