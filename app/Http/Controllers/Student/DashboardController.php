@@ -17,11 +17,14 @@ class DashboardController extends Controller
         $enrolledSubjects = $student->schoolClass?->subjects ?? collect();
         $recentGrades = $student->grades()->with('subject')->latest()->take(5)->get();
 
-        $announcements = Announcement::whereIn('target_role', ['all', 'student'])
+        // Announcements - paginated, 4 per page, only all + student (filtered by class if applicable)
+        $announcements = Announcement::with('author')
+            ->whereIn('target_role', ['all', 'student'])
             ->where(function ($q) use ($student) {
                 $q->whereNull('class_id')->orWhere('class_id', $student->class_id);
             })
-            ->orderByDesc('created_at')->take(5)->get();
+            ->orderByDesc('created_at')
+            ->paginate(4);
 
         // Flatten all schedule slots from class subjects for the weekly grid
         $scheduleSlots = $enrolledSubjects->flatMap(function ($subject) {

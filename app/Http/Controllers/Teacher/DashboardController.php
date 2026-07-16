@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -15,9 +16,6 @@ class DashboardController extends Controller
         $todayClassesCount = $subjects->count();
         $pendingGrades = \App\Models\Grade::whereIn('subject_id', $subjects->pluck('id'))
             ->where('approved', false)->count();
-
-        $announcements = \App\Models\Announcement::whereIn('target_role', ['all', 'teacher'])
-            ->orderByDesc('created_at')->take(5)->get();
 
         // Build class cards from subjects + their schedules (room comes from schedule, not class)
         $teachingClasses = $subjects->map(function ($subject) {
@@ -46,6 +44,12 @@ class DashboardController extends Controller
                 ];
             });
         });
+
+        // Announcements - paginated, 4 per page, only all + teacher
+        $announcements = Announcement::with('author')
+            ->whereIn('target_role', ['all', 'teacher'])
+            ->orderByDesc('created_at')
+            ->paginate(4);
 
         return view('teacher.dashboard', compact(
             'teacher', 'teachingClasses', 'subjects', 'todayClassesCount',

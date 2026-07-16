@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\SchoolClass;
 use App\Models\Student;
@@ -80,6 +81,11 @@ class DashboardController extends Controller
             }
         }
 
+        // Announcements - paginated, 4 per page
+        $announcements = Announcement::with('author')
+            ->orderByDesc('created_at')
+            ->paginate(4);
+
         return view('admin.dashboard', [
             'totalStudents' => $totalStudents,
             'totalTeachers' => $totalTeachers,
@@ -92,6 +98,7 @@ class DashboardController extends Controller
             'classes' => $classes,
             'selectedClassId' => $selectedClassId,
             'schedules' => $scheduleSlots,
+            'announcements' => $announcements,
         ]);
     }
 }
