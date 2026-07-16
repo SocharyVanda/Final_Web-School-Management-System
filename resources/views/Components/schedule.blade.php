@@ -1,4 +1,4 @@
-@props(['schedules'])
+@props(['schedules', 'classes' => [], 'selectedClassId' => null])
 
 @php
     $days = [1 => 'Mon', 2 => 'Tue', 3 => 'Wed', 4 => 'Thu', 5 => 'Fri'];
@@ -8,7 +8,18 @@
 @endphp
 
 <div class="bg-white rounded-card shadow-soft p-6">
-    <h2 class="font-semibold text-slate-800 mb-4">My Weekly Schedule</h2>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="font-semibold text-slate-800">My Weekly Schedule</h2>
+        @if(count($classes) > 0)
+            <form method="GET" class="flex items-center gap-2">
+                <select name="class_id" onchange="this.form.submit()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm">
+                    @foreach($classes as $class)
+                        <option value="{{ $class->id }}" @selected($selectedClassId == $class->id)>{{ $class->name }}</option>
+                    @endforeach
+                </select>
+            </form>
+        @endif
+    </div>
 
     @if(empty($schedules) || count($schedules) === 0)
         <div class="text-center py-12 text-slate-400">
@@ -49,11 +60,11 @@
 
                             @foreach(collect($schedules)->where('day_of_week', $dayNum) as $slot)
                                 @php
-                                    $start = \Carbon\Carbon::parse($slot['start_time']);
-                                    $end = \Carbon\Carbon::parse($slot['end_time']);
+                                    $start = \Carbon\Carbon::parse($slot['start_time'] ?? '08:00');
+                                    $end = !empty($slot['end_time']) ? \Carbon\Carbon::parse($slot['end_time']) : $start->copy()->addMinutes(60);
 
                                     if ($end->lt($start)) {
-                                        continue;
+                                        $end = $start->copy()->addMinutes(60);
                                     }
 
                                     $top = (($start->hour - $startHour) * 60) + $start->minute;
@@ -64,9 +75,9 @@
                                     $room = $slot['room'] ?? null;
                                     $color = $slot['color'] ?? '#2563eb';
                                 @endphp
-                                @if($height > 0 && $height <= 240)
+                                @if($height > 0)
                                     <div class="absolute inset-x-1 rounded-lg px-2 py-1 text-white overflow-hidden shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
-                                         style="top: {{ $top }}px; height: {{ max($height, 30) }}px; background-color: {{ $color }}; width: calc(100% - 8px);">
+                                         style="top: {{ max($top, 0) }}px; height: {{ max($height, 30) }}px; background-color: {{ $color }}; width: calc(100% - 8px);">
                                         <p class="text-xs font-semibold leading-tight truncate">{{ $subjectCode }}</p>
                                         <p class="text-[10px] leading-tight opacity-90">{{ $start->format('g:i') }}-{{ $end->format('g:i A') }}</p>
                                         @if($teacherName)

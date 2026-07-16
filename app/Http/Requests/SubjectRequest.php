@@ -22,9 +22,23 @@ class SubjectRequest extends FormRequest
             'schedules' => ['nullable', 'array'],
             'schedules.*.day_of_week' => ['nullable', 'integer', 'between:0,6'],
             'schedules.*.start_time' => ['nullable', 'date_format:H:i'],
-            'schedules.*.end_time' => ['nullable', 'date_format:H:i', 'after:schedules.*.start_time'],
+            'schedules.*.end_time' => ['nullable', 'date_format:H:i'],
             'schedules.*.room' => ['nullable', 'string', 'max:50'],
             'schedules.*.color' => ['nullable', 'string', 'max:7'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $schedules = $this->input('schedules', []);
+            foreach ($schedules as $i => $schedule) {
+                $start = $schedule['start_time'] ?? null;
+                $end = $schedule['end_time'] ?? null;
+                if ($start && $end && $end <= $start) {
+                    $validator->errors()->add("schedules.{$i}.end_time", 'End time must be after start time.');
+                }
+            }
+        });
     }
 }

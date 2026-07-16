@@ -48,51 +48,50 @@ class DashboardController extends Controller
             ->sortByDesc('time')
             ->take(6);
 
-        $pendingLeaveRequests = 0; // placeholder for future leave-request feature
+        $pendingLeaveRequests = 0;
 
-       // Class schedule dropdown
-$classes = SchoolClass::orderBy('name')->get();
+        // Class schedule dropdown
+        $classes = SchoolClass::orderBy('name')->get();
+        $selectedClassId = request('class_id', $classes->first()?->id);
 
-$selectedClassId = request('class_id', $classes->first()?->id);
+        $scheduleSlots = collect();
 
-$scheduleSlots = collect();
+        if ($selectedClassId) {
+            $selectedClass = SchoolClass::with([
+                'subjects.schedules',
+                'subjects.teacher.user'
+            ])->find($selectedClassId);
 
-if ($selectedClassId) {
-    $selectedClass = SchoolClass::with([
-        'subjects.schedules',
-        'subjects.teacher.user'
-    ])->find($selectedClassId);
+            if ($selectedClass) {
+                $scheduleSlots = $selectedClass->subjects->flatMap(function ($subject) {
+                    return $subject->schedules->map(function ($schedule) use ($subject) {
+                        return [
+                            'subject_name' => $subject->name,
+                            'subject_code' => $subject->code,
+                            'teacher_name' => optional($subject->teacher?->user)->name,
+                            'day_of_week' => (int) $schedule->day_of_week,
+                            'start_time' => $schedule->start_time,
+                            'end_time' => $schedule->end_time,
+                            'room' => $schedule->room,
+                            'color' => $schedule->color ?: '#2563EB',
+                        ];
+                    });
+                });
+            }
+        }
 
-    if ($selectedClass) {
-        $scheduleSlots = $selectedClass->subjects->flatMap(function ($subject) {
-            return $subject->schedules->map(function ($schedule) use ($subject) {
-                return [
-                    'subject_name' => $subject->name,
-                    'subject_code' => $subject->code,
-                    'teacher_name' => optional($subject->teacher?->user)->name,
-                    'day_of_week' => $schedule->day_of_week,
-                    'start_time' => $schedule->start_time,
-                    'end_time' => $schedule->end_time,
-                    'room' => $schedule->room,
-                    'color' => $schedule->color ?: '#2563EB',
-                ];
-            });
-        });
-    }
-}
-
-     return view('admin.dashboard', [
-    'totalStudents' => $totalStudents,
-    'totalTeachers' => $totalTeachers,
-    'totalClasses' => $totalClasses,
-    'activeClassesPercent' => $activeClassesPercent,
-    'todayAttendanceRate' => $todayAttendanceRate,
-    'months' => $months,
-    'recentActivity' => $recentActivity,
-    'pendingLeaveRequests' => $pendingLeaveRequests,
-    'classes' => $classes,
-    'selectedClassId' => $selectedClassId,
-    'schedules' => $scheduleSlots,
-]);
+        return view('admin.dashboard', [
+            'totalStudents' => $totalStudents,
+            'totalTeachers' => $totalTeachers,
+            'totalClasses' => $totalClasses,
+            'activeClassesPercent' => $activeClassesPercent,
+            'todayAttendanceRate' => $todayAttendanceRate,
+            'months' => $months,
+            'recentActivity' => $recentActivity,
+            'pendingLeaveRequests' => $pendingLeaveRequests,
+            'classes' => $classes,
+            'selectedClassId' => $selectedClassId,
+            'schedules' => $scheduleSlots,
+        ]);
     }
 }
