@@ -32,14 +32,14 @@
             @forelse($teachers as $teacher)
                 <tr class="hover:bg-slate-50">
                     <td class="px-5 py-3">
-                        <p class="font-medium text-slate-800">{{ $teacher->user->name }}</p>
-                        <p class="text-xs text-slate-400">{{ $teacher->user->email }}</p>
+                        <p class="font-medium text-slate-800">{{ $teacher->user?->name ?? 'Unknown' }}</p>
+                        <p class="text-xs text-slate-400">{{ $teacher->user?->email ?? '—' }}</p>
                     </td>
                     <td class="px-5 py-3 text-slate-600">{{ $teacher->teacher_code }}</td>
                     <td class="px-5 py-3 text-slate-600">{{ $teacher->department ?? '—' }}</td>
                     <td class="px-5 py-3">
-                        <span class="text-xs font-medium px-2 py-1 rounded-full {{ $teacher->user->status === 'active' ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-500' }}">
-                            {{ ucfirst($teacher->user->status) }}
+                        <span class="text-xs font-medium px-2 py-1 rounded-full {{ ($teacher->user?->status ?? 'inactive') === 'active' ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-500' }}">
+                            {{ ucfirst($teacher->user?->status ?? 'inactive') }}
                         </span>
                     </td>
                     <td class="px-5 py-3 text-right space-x-2">

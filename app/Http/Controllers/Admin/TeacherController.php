@@ -128,7 +128,11 @@ class TeacherController extends Controller
 
     public function destroy(Teacher $teacher)
     {
-        $teacher->user->delete();
+        DB::transaction(function () use ($teacher) {
+            $teacher->delete();
+            $teacher->user?->delete();
+        });
+
         return back()->with('success', 'Teacher deleted successfully.');
     }
 
@@ -141,7 +145,6 @@ class TeacherController extends Controller
 
     public function assign(Request $request, Teacher $teacher)
     {
-        // Assign teacher to classes/subjects from a multi-select form
         $request->validate([
             'class_ids' => ['nullable', 'array'],
             'subject_ids' => ['nullable', 'array'],
