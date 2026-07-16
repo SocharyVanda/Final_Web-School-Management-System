@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') - {{ config('app.name', 'EduFlow') }}</title>
+    @php
+        $setting = \App\Models\Setting::first();
+        $schoolName = $setting?->school_name ?? 'EduFlow';
+        $logoUrl = $setting?->logo ? asset('storage/' . $setting->logo) : null;
+    @endphp
+    <title>@yield('title', 'Dashboard') - {{ $schoolName }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,9 +38,13 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-sidebar text-slate-200 flex flex-col fixed inset-y-0 left-0">
         <div class="flex items-center gap-3 px-5 py-5 border-b border-white/10">
-            <div class="w-9 h-9 rounded-lg bg-brand flex items-center justify-center font-bold">EF</div>
+            @if($logoUrl)
+                <img src="{{ $logoUrl }}" alt="Logo" class="h-9 w-9 rounded-lg object-cover">
+            @else
+                <div class="w-9 h-9 rounded-lg bg-brand flex items-center justify-center font-bold text-white">EF</div>
+            @endif
             <div>
-                <p class="font-bold text-white leading-tight">EduFlow</p>
+                <p class="font-bold text-white leading-tight">{{ $schoolName }}</p>
                 <p class="text-xs text-slate-400 leading-tight">{{ ucfirst(auth()->user()->role) }} Portal</p>
             </div>
         </div>

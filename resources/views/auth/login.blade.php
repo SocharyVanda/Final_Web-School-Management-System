@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - EduFlow</title>
+    @php
+        $setting = \App\Models\Setting::first();
+        $schoolName = $setting?->school_name ?? 'EduFlow';
+        $logoUrl = $setting?->logo ? asset('storage/' . $setting->logo) : null;
+    @endphp
+    <title>Login - {{ $schoolName }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,8 +17,12 @@
 <body class="bg-slate-50 min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-sm">
         <div class="flex items-center gap-3 justify-center mb-8">
-            <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">EF</div>
-            <span class="text-xl font-bold text-slate-800">EduFlow</span>
+            @if($logoUrl)
+                <img src="{{ $logoUrl }}" alt="Logo" class="h-10 w-auto rounded">
+            @else
+                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">EF</div>
+            @endif
+            <span class="text-xl font-bold text-slate-800">{{ $schoolName }}</span>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
