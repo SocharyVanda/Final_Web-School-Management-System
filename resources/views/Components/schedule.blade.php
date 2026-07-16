@@ -7,7 +7,7 @@
     $totalHeight = ($endHour - $startHour) * 60;
 @endphp
 
-<div class="bg-white rounded-card shadow-soft p-6">
+<div class="bg-white rounded-card shadow-soft p-6 mb-6">
     <div class="flex items-center justify-between mb-4">
         <h2 class="font-semibold text-slate-800">My Weekly Schedule</h2>
         @if(count($classes) > 0)
