@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Route;
 | Public routes (login only — no public registration)
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => redirect('/login'));
+
+Route::get('/', fn() => redirect('/login'));
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('settings', [Admin\SettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [Admin\SettingController::class, 'update'])->name('settings.update');
+
+    Route::get('profile', [Admin\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [Admin\ProfileController::class, 'update'])->name('profile.update');
 });
 
 /*
