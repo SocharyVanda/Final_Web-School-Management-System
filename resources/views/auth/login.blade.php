@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,15 +13,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
+
 <body class="bg-slate-50 min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-sm">
         <div class="flex items-center gap-3 justify-center mb-8">
-            @if($logoUrl)
+            @if ($logoUrl)
                 <img src="{{ $logoUrl }}" alt="Logo" class="h-10 w-auto rounded">
             @else
-                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">EF</div>
+                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">EF
+                </div>
             @endif
             <span class="text-xl font-bold text-slate-800">{{ $schoolName }}</span>
         </div>
@@ -48,10 +55,12 @@
                         class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none">
                 </div>
                 <label class="flex items-center gap-2 text-sm text-slate-600">
-                    <input type="checkbox" name="remember" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                    <input type="checkbox" name="remember"
+                        class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
                     Remember me
                 </label>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2.5 rounded-lg transition">
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2.5 rounded-lg transition">
                     Sign in
                 </button>
             </form>
@@ -59,4 +68,5 @@
         <p class="text-center text-xs text-slate-400 mt-6">Accounts are created by school administrators only.</p>
     </div>
 </body>
+
 </html>
