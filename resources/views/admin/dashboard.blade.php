@@ -81,17 +81,42 @@
     <div class="lg:col-span-2 bg-white rounded-card shadow-soft p-6">
         <h2 class="font-semibold text-slate-800 mb-1">Student Enrollment</h2>
         <p class="text-sm text-slate-500 mb-4">Registration trends over the last 6 months</p>
-        <div class="flex items-end gap-4 h-48">
-            @php $max = max($months->max('count'), 1); @endphp
-            @foreach($months as $m)
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-blue-100 rounded-t-lg relative" style="height: {{ max(($m['count'] / $max) * 100, 4) }}%">
-                        <div class="absolute inset-0 bg-brand rounded-t-lg opacity-80"></div>
-                    </div>
-                    <span class="text-xs text-slate-400">{{ $m['label'] }}</span>
-                </div>
+
+        @php
+            $max = max($months->max('count'), 1);
+            $chartWidth = 600;
+            $chartHeight = 180;
+            $padding = 20;
+            $stepX = $months->count() > 1 ? ($chartWidth - $padding * 2) / ($months->count() - 1) : 0;
+
+            $points = $months->values()->map(function ($m, $i) use ($stepX, $padding, $chartHeight, $max) {
+                $x = $padding + ($i * $stepX);
+                $y = $chartHeight - (($m['count'] / $max) * ($chartHeight - $padding));
+                return ['x' => $x, 'y' => $y, 'count' => $m['count'], 'label' => $m['label']];
+            });
+
+            $polylinePoints = $points->map(fn ($p) => "{$p['x']},{$p['y']}")->implode(' ');
+        @endphp
+
+        <svg viewBox="0 0 {{ $chartWidth }} {{ $chartHeight + 30 }}" class="w-full h-56">
+            @for($i = 0; $i <= 4; $i++)
+                <line x1="0" y1="{{ $i * ($chartHeight / 4) }}" x2="{{ $chartWidth }}" y2="{{ $i * ($chartHeight / 4) }}"
+                      stroke="#F1F5F9" stroke-width="1"/>
+            @endfor
+
+            <polyline points="{{ $polylinePoints }}" fill="none" stroke="#2563EB" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+
+            @foreach($points as $p)
+                <circle cx="{{ $p['x'] }}" cy="{{ $p['y'] }}" r="4" fill="#2563EB" stroke="white" stroke-width="2"/>
+                <text x="{{ $p['x'] }}" y="{{ $chartHeight + 20 }}" font-size="11" fill="#94A3B8" text-anchor="middle">
+                    {{ $p['label'] }}
+                </text>
+                <text x="{{ $p['x'] }}" y="{{ $p['y'] - 10 }}" font-size="10" fill="#334155" text-anchor="middle" font-weight="600">
+                    {{ $p['count'] }}
+                </text>
             @endforeach
-        </div>
+        </svg>
     </div>
 
     <div class="bg-white rounded-card shadow-soft p-6">

@@ -92,17 +92,7 @@
         <div class="flex-1 ml-64 flex flex-col min-h-screen">
             <!-- Topbar -->
             <header
-                class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                <div class="relative w-96 max-w-full">
-                    <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input type="text" placeholder="Search students, faculty, or resources..."
-                        class="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-100 text-sm border-none focus:ring-2 focus:ring-brand focus:bg-white transition">
-                </div>
+                class="h-16 bg-white border-b border-slate-200 flex items-center justify-end px-6 sticky top-0 z-10">
                 <div class="flex items-center gap-4">
                     <button class="relative text-slate-500 hover:text-slate-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
