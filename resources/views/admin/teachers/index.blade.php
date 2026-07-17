@@ -32,8 +32,20 @@
             @forelse($teachers as $teacher)
                 <tr class="hover:bg-slate-50">
                     <td class="px-5 py-3">
-                        <p class="font-medium text-slate-800">{{ $teacher->user?->name ?? 'Unknown' }}</p>
-                        <p class="text-xs text-slate-400">{{ $teacher->user?->email ?? '—' }}</p>
+                        <div class="flex items-center gap-3">
+                            @if($teacher->user?->photo)
+                                <img src="{{ asset('storage/' . $teacher->user->photo) }}" alt="Profile"
+                                    class="w-8 h-8 rounded-full object-cover">
+                            @else
+                                <div class="w-8 h-8 rounded-full bg-blue-100 text-brand flex items-center justify-center font-semibold text-xs">
+                                    {{ strtoupper(substr($teacher->user?->name ?? 'U', 0, 1)) }}
+                                </div>
+                            @endif
+                            <div>
+                                <p class="font-medium text-slate-800">{{ $teacher->user?->name ?? 'Unknown' }}</p>
+                                <p class="text-xs text-slate-400">{{ $teacher->user?->email ?? '—' }}</p>
+                            </div>
+                        </div>
                     </td>
                     <td class="px-5 py-3 text-slate-600">{{ $teacher->teacher_code }}</td>
                     <td class="px-5 py-3 text-slate-600">{{ $teacher->department ?? '—' }}</td>

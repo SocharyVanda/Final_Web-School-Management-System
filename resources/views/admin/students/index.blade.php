@@ -40,20 +40,25 @@
                 <tr class="hover:bg-slate-50">
                     <td class="px-5 py-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 text-brand flex items-center justify-center font-semibold text-xs">
-                                {{ strtoupper(substr($student->user->name, 0, 1)) }}
-                            </div>
+                            @if($student->user?->photo)
+                                <img src="{{ asset('storage/' . $student->user->photo) }}" alt="Profile"
+                                    class="w-8 h-8 rounded-full object-cover">
+                            @else
+                                <div class="w-8 h-8 rounded-full bg-blue-100 text-brand flex items-center justify-center font-semibold text-xs">
+                                    {{ strtoupper(substr($student->user?->name ?? 'U', 0, 1)) }}
+                                </div>
+                            @endif
                             <div>
-                                <p class="font-medium text-slate-800">{{ $student->user->name }}</p>
-                                <p class="text-xs text-slate-400">{{ $student->user->email }}</p>
+                                <p class="font-medium text-slate-800">{{ $student->user?->name ?? 'Unknown' }}</p>
+                                <p class="text-xs text-slate-400">{{ $student->user?->email ?? '—' }}</p>
                             </div>
                         </div>
                     </td>
                     <td class="px-5 py-3 text-slate-600">{{ $student->student_code }}</td>
                     <td class="px-5 py-3 text-slate-600">{{ $student->schoolClass->name ?? '—' }}</td>
                     <td class="px-5 py-3">
-                        <span class="text-xs font-medium px-2 py-1 rounded-full {{ $student->user->status === 'active' ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-500' }}">
-                            {{ ucfirst($student->user->status) }}
+                        <span class="text-xs font-medium px-2 py-1 rounded-full {{ ($student->user?->status ?? 'inactive') === 'active' ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-500' }}">
+                            {{ ucfirst($student->user?->status ?? 'inactive') }}
                         </span>
                     </td>
                     <td class="px-5 py-3 text-right space-x-2">
