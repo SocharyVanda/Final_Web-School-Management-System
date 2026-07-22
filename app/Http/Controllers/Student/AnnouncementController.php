@@ -20,4 +20,16 @@ class AnnouncementController extends Controller
 
         return view('student.announcements.index', compact('announcements'));
     }
+
+    public function show(Announcement $announcement)
+    {
+        $student = Auth::user()->student;
+
+        $visible = in_array($announcement->target_role, ['all', 'student'])
+            && ($announcement->class_id === null || $announcement->class_id === $student->class_id);
+
+        abort_unless($visible, 403);
+
+        return view('student.announcements.show', compact('announcement'));
+    }
 }

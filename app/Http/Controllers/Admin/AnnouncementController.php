@@ -7,6 +7,7 @@ use App\Http\Requests\AnnouncementRequest;
 use App\Models\Announcement;
 use App\Models\SchoolClass;
 use Illuminate\Http\Request;
+use Mews\Purifier\Facades\Purifier;
 
 class AnnouncementController extends Controller
 {
@@ -22,6 +23,11 @@ class AnnouncementController extends Controller
         return view('admin.announcements.index', compact('announcements'));
     }
 
+    public function show(Announcement $announcement)
+    {
+        return view('admin.announcements.show', compact('announcement'));
+    }
+
     public function create()
     {
         $classes = SchoolClass::orderBy('name')->get();
@@ -30,7 +36,10 @@ class AnnouncementController extends Controller
 
     public function store(AnnouncementRequest $request)
     {
-        Announcement::create($request->validated() + ['created_by' => $request->user()->id]);
+        $data = $request->validated();
+        $data['description'] = Purifier::clean($data['description']);
+
+        Announcement::create($data + ['created_by' => $request->user()->id]);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement posted.');
     }
 
@@ -42,13 +51,16 @@ class AnnouncementController extends Controller
 
     public function update(AnnouncementRequest $request, Announcement $announcement)
     {
-        $announcement->update($request->validated());
+        $data = $request->validated();
+        $data['description'] = Purifier::clean($data['description']);
+
+        $announcement->update($data);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement updated.');
     }
 
     public function destroy(Announcement $announcement)
     {
         $announcement->delete();
-        return back()->with('success', 'Announcement deleted.');
+        return redirect()->route('admin.announcements.index')->with('success', 'Announcement deleted.');
     }
 }

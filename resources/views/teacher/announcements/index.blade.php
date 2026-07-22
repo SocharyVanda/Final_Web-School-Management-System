@@ -7,15 +7,19 @@
 </div>
 <div class="space-y-4">
     @forelse($announcements as $a)
-        <div class="bg-white rounded-card shadow-soft p-5">
-            <div class="flex items-start justify-between">
+        <div class="relative bg-white rounded-card shadow-soft p-5 hover:shadow-md transition-shadow">
+            <a href="{{ route('teacher.announcements.show', $a) }}" class="absolute inset-0 z-0" aria-label="View {{ $a->title }}"></a>
+
+            <div class="flex items-start justify-between relative z-10 pointer-events-none">
                 <div>
                     <h3 class="font-semibold text-slate-800">{{ $a->title }}</h3>
-                    <p class="text-sm text-slate-500 mt-1">{{ $a->description }}</p>
+                    <p class="text-sm text-slate-500 mt-1">
+                        {{ Str::limit(strip_tags($a->description), 120) }}
+                    </p>
                     <p class="text-xs text-slate-400 mt-2">{{ $a->created_at->diffForHumans() }}</p>
                 </div>
                 @if($a->created_by === auth()->id())
-                    <form action="{{ route('teacher.announcements.destroy', $a) }}" method="POST" onsubmit="return confirm('Delete this announcement?')">
+                    <form action="{{ route('teacher.announcements.destroy', $a) }}" method="POST" onsubmit="return confirm('Delete this announcement?')" class="pointer-events-auto">
                         @csrf @method('DELETE')
                         <button class="text-red-500 hover:underline text-xs font-medium">Delete</button>
                     </form>

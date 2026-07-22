@@ -77,7 +77,7 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::post('materials', [Teacher\MaterialController::class, 'store'])->name('materials.store');
     Route::delete('materials/{material}', [Teacher\MaterialController::class, 'destroy'])->name('materials.destroy');
 
-    Route::resource('announcements', Teacher\AnnouncementController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('announcements', Teacher\AnnouncementController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
 
     Route::get('profile', [Teacher\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [Teacher\ProfileController::class, 'update'])->name('profile.update');
@@ -98,6 +98,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('materials/{material}/download', [Student\MaterialController::class, 'download'])->name('materials.download');
 
     Route::get('announcements', [Student\AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('announcements/{announcement}', [Student\AnnouncementController::class, 'show'])->name('announcements.show');
 
     Route::get('profile', [Student\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [Student\ProfileController::class, 'update'])->name('profile.update');

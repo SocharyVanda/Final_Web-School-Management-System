@@ -1,9 +1,12 @@
 @extends('layouts.app')
 @section('title', 'New Announcement')
 @section('content')
+
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+
 <div class="max-w-2xl">
     <h1 class="text-2xl font-bold text-slate-800 mb-6">New Announcement</h1>
-    <form method="POST" action="{{ route('teacher.announcements.store') }}" class="bg-white rounded-card shadow-soft p-6 space-y-5">
+    <form method="POST" action="{{ route('teacher.announcements.store') }}" id="announcement-form" class="bg-white rounded-card shadow-soft p-6 space-y-5">
         @csrf
         <input type="hidden" name="target_role" value="student">
         <div>
@@ -12,7 +15,8 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-            <textarea name="description" rows="4" required class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"></textarea>
+            <div id="editor" style="height: 200px;" class="bg-white"></div>
+            <textarea name="description" id="description-input" class="hidden"></textarea>
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Class</label>
@@ -28,4 +32,32 @@
         </div>
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Write your announcement...',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['link', 'blockquote'],
+                ['clean']
+            ]
+        }
+    });
+
+    document.getElementById('announcement-form').addEventListener('submit', function (e) {
+        const content = quill.root.innerHTML;
+        if (quill.getText().trim().length === 0) {
+            e.preventDefault();
+            alert('Description cannot be empty.');
+            return;
+        }
+        document.querySelector('#description-input').value = content;
+    });
+</script>
 @endsection

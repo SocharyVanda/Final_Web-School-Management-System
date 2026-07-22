@@ -1,0 +1,20 @@
+[1mdiff --git a/app/Providers/AppServiceProvider.php b/app/Providers/AppServiceProvider.php[m
+[1mindex 452e6b6..b71c74c 100644[m
+[1m--- a/app/Providers/AppServiceProvider.php[m
+[1m+++ b/app/Providers/AppServiceProvider.php[m
+[36m@@ -3,6 +3,7 @@[m
+ namespace App\Providers;[m
+ [m
+ use Illuminate\Support\ServiceProvider;[m
+[32m+[m[32muse Illuminate\Support\Facades\Schema;[m
+ [m
+ class AppServiceProvider extends ServiceProvider[m
+ {[m
+[36m@@ -19,6 +20,6 @@[m [mpublic function register(): void[m
+      */[m
+     public function boot(): void[m
+     {[m
+[31m-        //[m
+[32m+[m[32m        Schema::defaultStringLength(191);[m
+     }[m
+ }[m

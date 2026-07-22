@@ -10,16 +10,20 @@
 </div>
 <div class="space-y-4">
     @forelse($announcements as $a)
-        <div class="bg-white rounded-card shadow-soft p-5">
-            <div class="flex items-start justify-between">
+        <div class="relative bg-white rounded-card shadow-soft p-5 hover:shadow-md transition-shadow">
+            <a href="{{ route('admin.announcements.show', $a) }}" class="absolute inset-0 z-0" aria-label="View {{ $a->title }}"></a>
+
+            <div class="flex items-start justify-between relative z-10 pointer-events-none">
                 <div>
                     <h3 class="font-semibold text-slate-800">{{ $a->title }}</h3>
-                    <p class="text-sm text-slate-500 mt-1">{{ $a->description }}</p>
+                    <p class="text-sm text-slate-500 mt-1">
+                        {{ Str::limit(strip_tags($a->description), 120) }}
+                    </p>
                     <p class="text-xs text-slate-400 mt-2">
                         By {{ $a->author->name }} · Target: {{ ucfirst($a->target_role) }}{{ $a->schoolClass ? ' · '.$a->schoolClass->name : '' }} · {{ $a->created_at->diffForHumans() }}
                     </p>
                 </div>
-                <div class="flex gap-3 text-xs font-medium shrink-0 ml-4">
+                <div class="flex gap-3 text-xs font-medium shrink-0 ml-4 pointer-events-auto">
                     <a href="{{ route('admin.announcements.edit', $a) }}" class="text-brand hover:underline">Edit</a>
                     <form action="{{ route('admin.announcements.destroy', $a) }}" method="POST" onsubmit="return confirm('Delete this announcement?')">
                         @csrf @method('DELETE')
