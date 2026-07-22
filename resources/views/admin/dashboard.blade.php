@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
-
 @section('content')
+
 <div class="flex items-center justify-between mb-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-800">Academy Overview</h1>
@@ -146,7 +146,7 @@
         @forelse($announcements as $a)
             <div class="border-l-4 border-brand pl-4 py-1">
                 <p class="text-sm font-medium text-slate-800">{{ $a->title }}</p>
-                <p class="text-xs text-slate-500 mt-0.5">{{ Str::limit($a->description, 120) }}</p>
+                <p class="text-xs text-slate-500 mt-0.5">{!! Str::limit(strip_tags($a->description), 120) !!}</p>
                 <p class="text-xs text-slate-400 mt-1">
                     By {{ $a->author?->name ?? 'Unknown' }} · {{ $a->created_at->diffForHumans() }}
                     @if($a->target_role)
