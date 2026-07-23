@@ -10,15 +10,15 @@
 </div>
 <div class="space-y-4">
     @forelse($announcements as $a)
-        <div class="relative bg-white rounded-card shadow-soft p-5 hover:shadow-md transition-shadow">
+        <div class="relative bg-white rounded-card shadow-soft p-5 hover:shadow-md transition-shadow overflow-hidden">
             <a href="{{ route('admin.announcements.show', $a) }}" class="absolute inset-0 z-0" aria-label="View {{ $a->title }}"></a>
 
             <div class="flex items-start justify-between relative z-10 pointer-events-none">
-                <div>
+                <div class="min-w-0 flex-1">
                     <h3 class="font-semibold text-slate-800">{{ $a->title }}</h3>
-                    <p class="text-sm text-slate-500 mt-1">
-                        {{ Str::limit(strip_tags($a->description), 120) }}
-                    </p>
+                    <div class="text-sm text-slate-500 mt-1 line-clamp-2 break-all">
+                        {!! Str::limit(strip_tags($a->description, '<b><i><strong><em><u><s><span><a><br>'), 120) !!}
+                    </div>
                     <p class="text-xs text-slate-400 mt-2">
                         By {{ $a->author->name }} · Target: {{ ucfirst($a->target_role) }}{{ $a->schoolClass ? ' · '.$a->schoolClass->name : '' }} · {{ $a->created_at->diffForHumans() }}
                     </p>

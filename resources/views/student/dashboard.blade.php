@@ -42,9 +42,12 @@
         <h2 class="font-semibold text-slate-800 mb-4">Announcements</h2>
         <div class="space-y-3">
             @forelse($announcements as $a)
-                <a href="{{ route('student.announcements.show', $a) }}" class="block hover:bg-slate-50 rounded-lg p-2 -mx-2 transition-colors">
+                <a href="{{ route('student.announcements.show', $a) }}" class="block hover:bg-slate-50 rounded-lg p-2 -mx-2 transition-colors overflow-hidden">
                     <p class="text-sm font-medium text-slate-700">{{ $a->title }}</p>
-                    <p class="text-xs text-slate-400">{{ $a->created_at->diffForHumans() }}</p>
+                    <div class="text-xs text-slate-400 line-clamp-2 break-all">
+                        {!! Str::limit(strip_tags($a->description, '<b><i><strong><em><u><s><span><a><br>'), 120) !!}
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">{{ $a->created_at->diffForHumans() }}</p>
                 </a>
             @empty
                 <p class="text-sm text-slate-400">No announcements.</p>
@@ -60,9 +63,11 @@
     </div>
     <div class="space-y-4">
         @forelse($announcements as $a)
-            <a href="{{ route('student.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors">
+            <a href="{{ route('student.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors overflow-hidden">
                 <p class="text-sm font-medium text-slate-800">{{ $a->title }}</p>
-                <p class="text-xs text-slate-500 mt-0.5">{!! Str::limit(strip_tags($a->description), 120) !!}</p>
+                <div class="text-xs text-slate-500 mt-0.5 line-clamp-2 break-all">
+                    {!! Str::limit(strip_tags($a->description, '<b><i><strong><em><u><s><span><a><br>'), 120) !!}
+                </div>
                 <p class="text-xs text-slate-400 mt-1">
                     By {{ $a->author?->name ?? 'Unknown' }} · {{ $a->created_at->diffForHumans() }}
                     @if($a->target_role)

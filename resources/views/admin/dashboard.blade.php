@@ -144,9 +144,11 @@
     </div>
     <div class="space-y-4">
         @forelse($announcements as $a)
-            <a href="{{ route('admin.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors">
+            <a href="{{ route('admin.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors overflow-hidden">
                 <p class="text-sm font-medium text-slate-800">{{ $a->title }}</p>
-                <p class="text-xs text-slate-500 mt-0.5">{!! Str::limit(strip_tags($a->description), 120) !!}</p>
+                <div class="text-xs text-slate-500 mt-0.5 line-clamp-2 break-all">
+                    {!! Str::limit(strip_tags($a->description, '<b><i><strong><em><u><s><span><a><br>'), 120) !!}
+                </div>
                 <p class="text-xs text-slate-400 mt-1">
                     By {{ $a->author?->name ?? 'Unknown' }} · {{ $a->created_at->diffForHumans() }}
                     @if($a->target_role)
