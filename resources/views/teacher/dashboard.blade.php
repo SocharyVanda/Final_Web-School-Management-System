@@ -45,10 +45,10 @@
         <h2 class="font-semibold text-slate-800 mb-4">Announcements</h2>
         <div class="space-y-3">
             @forelse($announcements as $a)
-                <div>
+                <a href="{{ route('teacher.announcements.show', $a) }}" class="block hover:bg-slate-50 rounded-lg p-2 -mx-2 transition-colors">
                     <p class="text-sm font-medium text-slate-700">{{ $a->title }}</p>
                     <p class="text-xs text-slate-400">{{ $a->created_at->diffForHumans() }}</p>
-                </div>
+                </a>
             @empty
                 <p class="text-sm text-slate-400">No announcements.</p>
             @endforelse
@@ -59,10 +59,11 @@
 <div class="bg-white rounded-card shadow-soft p-6">
     <div class="flex items-center justify-between mb-4">
         <h2 class="font-semibold text-slate-800">Announcements</h2>
+        <a href="{{ route('teacher.announcements.index') }}" class="text-sm text-brand hover:underline">View All</a>
     </div>
     <div class="space-y-4">
         @forelse($announcements as $a)
-            <div class="border-l-4 border-brand pl-4 py-1">
+            <a href="{{ route('teacher.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors">
                 <p class="text-sm font-medium text-slate-800">{{ $a->title }}</p>
                 <p class="text-xs text-slate-500 mt-0.5">{!! Str::limit(strip_tags($a->description), 120) !!}</p>
                 <p class="text-xs text-slate-400 mt-1">
@@ -71,7 +72,7 @@
                         · Target: {{ ucfirst($a->target_role) }}
                     @endif
                 </p>
-            </div>
+            </a>
         @empty
             <p class="text-sm text-slate-400">No announcements yet.</p>
         @endforelse

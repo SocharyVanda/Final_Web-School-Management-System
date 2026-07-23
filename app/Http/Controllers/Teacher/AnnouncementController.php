@@ -32,10 +32,11 @@ class AnnouncementController extends Controller
         $teacher = Auth::user()->teacher;
         $classIds = $teacher->classes()->pluck('id');
 
-        abort_unless(
-            $announcement->created_by === Auth::id() || $classIds->contains($announcement->class_id),
-            403
-        );
+        $visible = $announcement->created_by === Auth::id()
+            || $classIds->contains($announcement->class_id)
+            || in_array($announcement->target_role, ['all', 'teacher']);
+
+        abort_unless($visible, 403);
 
         return view('teacher.announcements.show', compact('announcement'));
     }

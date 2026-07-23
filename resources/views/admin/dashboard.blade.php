@@ -144,7 +144,7 @@
     </div>
     <div class="space-y-4">
         @forelse($announcements as $a)
-            <div class="border-l-4 border-brand pl-4 py-1">
+            <a href="{{ route('admin.announcements.show', $a) }}" class="block border-l-4 border-brand pl-4 py-1 hover:bg-slate-50 rounded-r-lg transition-colors">
                 <p class="text-sm font-medium text-slate-800">{{ $a->title }}</p>
                 <p class="text-xs text-slate-500 mt-0.5">{!! Str::limit(strip_tags($a->description), 120) !!}</p>
                 <p class="text-xs text-slate-400 mt-1">
@@ -153,7 +153,7 @@
                         · Target: {{ ucfirst($a->target_role) }}
                     @endif
                 </p>
-            </div>
+            </a>
         @empty
             <p class="text-sm text-slate-400">No announcements yet.</p>
         @endforelse
